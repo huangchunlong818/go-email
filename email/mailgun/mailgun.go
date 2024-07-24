@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	emailsType "github.com/huangchunlong818/go-email/email/type"
-	"github.com/mailgun/mailgun-go/v4"
+	"fmt"
 	"strconv"
 	"time"
+
+	emailsType "github.com/huangchunlong818/go-email/email/type"
+	"github.com/mailgun/mailgun-go/v4"
 )
 
 // Mailgun发送邮件
@@ -54,7 +56,7 @@ func (m *Mailgun) Send(params emailsType.SendMailParams) (string, error) {
 
 	// 创建邮件消息
 	message := nowSend.NewMessage(
-		params.From,    // 发件人信息
+		fmt.Sprintf("%s<%s>", params.FromName, params.From), // 发件人信息
 		params.Subject, // 邮件主题
 		"",             // 邮件正文
 	)
@@ -87,6 +89,10 @@ func (m *Mailgun) Send(params emailsType.SendMailParams) (string, error) {
 				return id, errors.New("mailgun发送邮件-添加TAG失败，参数：" + jsonParams + "错误信息：" + err.Error())
 			}
 		}
+	}
+
+	for _, v := range params.Email {
+		_ = message.AddRecipientAndVariables(v, nil)
 	}
 
 	// 设置邮件标头
