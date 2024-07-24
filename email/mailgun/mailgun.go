@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	emailsType "github.com/huangchunlong818/go-email/email/type"
 	"github.com/mailgun/mailgun-go/v4"
 	"strconv"
@@ -54,9 +55,10 @@ func (m *Mailgun) Send(params emailsType.SendMailParams) (string, error) {
 
 	// 创建邮件消息
 	message := nowSend.NewMessage(
-		params.From,    // 发件人信息
-		params.Subject, // 邮件主题
-		"",             // 邮件正文
+		fmt.Sprintf("%s<%s>", params.FromName, params.From), // 发件人信息
+		params.Subject,  // 邮件主题
+		"",              // 邮件正文
+		params.Email..., //收件人
 	)
 	if params.Html != "" {
 		// 设置邮件消息的 "Content-Type" 为 "text/html" 和设置HTML 发送内容

@@ -6,7 +6,7 @@ go get github.com/huangchunlong818/go-email
 go get -u github.com/huangchunlong818/go-email
 
 指定版本
-go get -u github.com/huangchunlong818/go-email@v0.1.1
+go get -u github.com/huangchunlong818/go-email@v0.1.2
 
 开发的go版本 1.20.5
 

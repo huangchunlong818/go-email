@@ -5,7 +5,7 @@ import "time"
 // 请求参数 目前只有 mailgun 用到
 type SendMailParams struct {
 	From       string            // 发件人信息-以这个为主，主要是发件人邮箱
-	FromName   string            // 发件人信息-辅助，发件人名称，仅对sendgrid起作用
+	FromName   string            // 发件人信息-辅助，发件人名称
 	Subject    string            // 邮件主题
 	Text       string            // 邮件正文 跟Html需要设置一个就行， 优先Html
 	Email      []string          // 收件人邮箱,至少一个，至多1000个
