@@ -68,9 +68,9 @@ func (m *Mailgun) Send(params emailsType.SendMailParams) (string, error) {
 	}
 	message := nowSend.NewMessage(
 		fmt.Sprintf("%s<%s>", params.FromName, params.From), // 发件人信息
-		params.Subject,                                      // 邮件主题
-		"",                                                  // 邮件正文
-		toName...,                                           // 收件人
+		params.Subject, // 邮件主题
+		"",             // 邮件正文
+		toName...,      // 收件人
 	)
 
 	if params.Html != "" {

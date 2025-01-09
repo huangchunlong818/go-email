@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	emailsType "github.com/huangchunlong818/go-email/email/type"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -48,8 +49,22 @@ func (s *Sendgrid) Send(params emailsType.SendMailParams) (string, error) {
 
 	// 创建一个邮件对象
 	from := mail.NewEmail(params.FromName, params.From)
-	to := mail.NewEmail("", params.Email[0]) //第一个发件人
+
+	// 创建 toNames 列表
+	var toNames []string
+	for i, email := range params.Email {
+		var recipientName string
+		if i < len(params.ToName) && params.ToName[i] != "" {
+			recipientName = fmt.Sprintf("%s <%s>", params.ToName[i], email)
+		} else {
+			recipientName = email
+		}
+		toNames = append(toNames, recipientName)
+	}
+
+	to := mail.NewEmail(toNames[0], params.Email[0]) //第一个发件人
 	m := mail.NewV3MailInit(from, params.Subject, to)
+
 	var content *mail.Content
 	if params.Html != "" {
 		// 设置邮件消息的 "Content-Type" 为 "text/html" 和设置HTML 发送内容
@@ -66,7 +81,7 @@ func (s *Sendgrid) Send(params emailsType.SendMailParams) (string, error) {
 		personalization := mail.NewPersonalization()
 		for k, emails := range params.Email {
 			if k > 0 {
-				personalization.AddTos(mail.NewEmail("", emails))
+				personalization.AddTos(mail.NewEmail(toNames[k], emails))
 			}
 		}
 		m.AddPersonalizations(personalization)
