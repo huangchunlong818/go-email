@@ -54,12 +54,25 @@ func (m *Mailgun) Send(params emailsType.SendMailParams) (string, error) {
 	}
 
 	// 创建邮件消息
+	var toName []string
+	for keys, email := range params.Email {
+		var recipientName string
+		if keys < len(params.ToName) && params.ToName[keys] != "" {
+			// 如果存在对应的收件人名称且不为空，使用该名称
+			recipientName = fmt.Sprintf("%s <%s>", params.ToName[keys], email)
+		} else {
+			// 否则，仅使用邮箱
+			recipientName = email
+		}
+		toName = append(toName, recipientName) // 将收件人字符串添加到列表中
+	}
 	message := nowSend.NewMessage(
 		fmt.Sprintf("%s<%s>", params.FromName, params.From), // 发件人信息
-		params.Subject,  // 邮件主题
-		"",              // 邮件正文
-		params.Email..., //收件人
+		params.Subject,                                      // 邮件主题
+		"",                                                  // 邮件正文
+		toName...,                                           // 收件人
 	)
+
 	if params.Html != "" {
 		// 设置邮件消息的 "Content-Type" 为 "text/html" 和设置HTML 发送内容
 		message.SetHtml(params.Html)
